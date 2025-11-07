@@ -14,10 +14,10 @@ const Header = () => {
           <NavLink to="/serie-tv" className="nav-link">
             Serie TV
           </NavLink>
-          <NavLink to="/film" className="nav-link">
+          <NavLink to="/movies" className="nav-link">
             Film
           </NavLink>
-          <NavLink to="/ricerca" className="nav-link">
+          <NavLink to="/search" className="nav-link">
             Ricerca
           </NavLink>
         </nav>
