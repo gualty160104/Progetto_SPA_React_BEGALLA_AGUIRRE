@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    color-scheme: light dark;
+  }
+
+  html, body, main, #root {
+    @apply h-full w-full;
+  }
+
+  body {
+    @apply m-0 flex items-center justify-center min-w-[320px] min-h-screen w-full;
+    @apply leading-normal font-normal;
+    @apply text-white/[.87] bg-[#242424];
+    @apply antialiased;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1 {
+    @apply text-5xl leading-tight;
+  }
+
+  a {
+    @apply font-medium text-[#646cff] no-underline;
+    @apply hover:text-[#535bf2];
+  }
+
+  #root {
+    @apply flex flex-col;
+  }
+}
+
+@layer components {
+  main {
+    @apply w-screen flex flex-col items-center justify-center p-5 min-h-[80vh] text-center;
+  }
+
+  footer {
+    @apply w-full py-3.5 px-5 text-center text-sm text-[#777] border-t border-[#ddd];
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    @apply text-[#213547] bg-white;
+  }
+  
+  a:hover {
+    @apply text-[#747bff];
+  }
+}
