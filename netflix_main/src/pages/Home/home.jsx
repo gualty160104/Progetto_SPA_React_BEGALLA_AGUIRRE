@@ -33,7 +33,7 @@ export default function HomePage() {
           ))}
         </div>
         <div className="mt-8">
-          <Button variant="contained">Vedi tutti i film</Button>
+          <Button>Vedi tutti i film</Button>
         </div>
       </section>
 
@@ -54,7 +54,7 @@ export default function HomePage() {
           ))}
         </div>
         <div className="mt-8">
-          <Button variant="contained">Vedi tutti i film</Button>
+          <Button >Vedi tutte le serie TV</Button>
         </div>
       </section>
     </div>
