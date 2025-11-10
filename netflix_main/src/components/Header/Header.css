@@ -4,7 +4,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #ffffff;
+  background-color: black;
   border-bottom: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   z-index: 1000;
@@ -23,6 +23,7 @@
 
 /* --- LOGO --- */
 .header-logo {
+  width: 30px;
   font-size: 1.4rem;
   font-weight: bold;
   color: #004aad;
@@ -37,7 +38,7 @@
 /* --- LINK --- */
 .nav-link {
   text-decoration: none;
-  color: #333;
+  color: #ffffff;
   font-size: 1rem;
   padding: 6px 10px;
   border-radius: 4px;
@@ -46,13 +47,13 @@
 
 /* Hover */
 .nav-link:hover {
-  background-color: #e8f0ff;
-  color: #004aad;
+  background-color: #ff0000;
+  color: #ffffff;
 }
 
 /* Attivo (pagina corrente) */
 .nav-link.active {
-  background-color: #004aad;
+  background-color: #ff0000;
   color: white;
 }
 

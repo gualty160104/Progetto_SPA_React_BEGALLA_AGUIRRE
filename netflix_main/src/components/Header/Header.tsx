@@ -1,11 +1,14 @@
 import { NavLink } from "react-router-dom";
+import Netflix from "../../assets/netflix.png";
 import "./Header.css";
 
 const Header = () => {
   return (
     <header className="header">
       <div className="header-container">
-        <div className="header-logo">NETFLIX LOGO</div>
+        <div className="header-logo">
+          <img src={Netflix} alt="Netflix Logo" className="logo-image" />
+        </div>
 
         <nav className="header-nav">
           <NavLink to="/" className="nav-link">
