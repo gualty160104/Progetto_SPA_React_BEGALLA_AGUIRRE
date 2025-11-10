@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "../../components/Card/card";
 import { CardContent } from "../../components/CardContent/cardcontent";
-import { fetchFromTmdb, ENDPOINTS } from "../../api/tmdb";
+import { fetchFromTmdb, ENDPOINTS } from "../../components/api/tmdb";
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 

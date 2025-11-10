@@ -3,7 +3,7 @@ import { Card } from "../../components/Card/card";
 import { CardContent } from "../../components/CardContent/cardcontent";
 import { Button } from "../../components/Button/button";
 import background from "../../assets/background.jpg";
-import { fetchFromTmdb, ENDPOINTS } from "../../api/tmdb";
+import { fetchFromTmdb, ENDPOINTS } from "../../components/api/tmdb";
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -69,7 +69,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="mt-8">
-              <Button variant="contained">Vedi tutti i film</Button>
+              <Button variant="contained" linkto="/movies">Vedi tutti i film</Button>
             </div>
           </>
         )}
@@ -100,7 +100,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="mt-8">
-              <Button variant="contained">Vedi tutte le serie TV</Button>
+              <Button variant="contained" onClick={() => window.location.href = "/serie-tv"}>Vedi tutte le serie TV</Button>
             </div>
           </>
         )}

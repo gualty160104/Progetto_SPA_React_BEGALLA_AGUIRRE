@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "../../components/Card/card";
 import { CardContent } from "../../components/CardContent/cardcontent";
-import { fetchFromTmdb, ENDPOINTS } from "../../api/tmdb";
+import { fetchFromTmdb, ENDPOINTS } from "../../components/api/tmdb";
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -42,9 +42,9 @@ const Serietv = () => {
                   className="w-full h-96 object-cover"
                 />
                 <div className="p-4 text-center">
-                  <h3 className="text-lg font-bold text-red-600">{show.name}</h3>
-                  <p className="text-sm text-red-600">{show.first_air_date?.split('-')[0] || 'N/A'}</p>
-                  <p className="text-sm text-red-600 mt-2">⭐ {show.vote_average?.toFixed(1)}</p>
+                  <h3 className="text-lg font-bold text-white">{show.name}</h3>
+                  <p className="text-sm text-white">{show.first_air_date?.split('-')[0] || 'N/A'}</p>
+                  <p className="text-sm text-white mt-2">⭐ {show.vote_average?.toFixed(1)}</p>
                 </div>
               </CardContent>
             </Card>
