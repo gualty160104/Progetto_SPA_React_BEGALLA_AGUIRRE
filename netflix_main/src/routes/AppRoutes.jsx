@@ -5,7 +5,7 @@ import Footer from "../components/Footer/Footer.js";
 
 import Home from "../pages/Home/home.jsx";
 import Movies from "../pages/Movies/movies.jsx";
-// import Dettaglio from "../pages/Dettaglio/dettaglio.jsx";
+import Dettaglio from "../pages/Dettaglio/dettaglio.jsx";
 // import Preferiti from "../pages/Preferiti/preferiti.jsx";
 import Serietv from "../pages/Serietv/serietv.jsx";
 import Ricerca from "../pages/Ricerca/ricerca.jsx";
@@ -20,7 +20,7 @@ const AppRoutes = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/movies" element={<Movies />} /> {/* sarebbe lista nella FAD */}
-            {/* <Route path="/movies/:id" element={<Dettaglio />} />  dettaglio del film */}
+            <Route path="/movies/:id" element={<Dettaglio />} />  {/* dettaglio del film */}
             <Route path="/serie-tv" element={<Serietv />} />
             <Route path="/search" element={<Ricerca />} />
             {/* <Route path="/preferiti" element={<Preferiti />} /> */}

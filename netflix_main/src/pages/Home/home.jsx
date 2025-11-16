@@ -19,7 +19,7 @@ export default function HomePage() {
           fetchFromTmdb(ENDPOINTS.popularMovies),
           fetchFromTmdb(ENDPOINTS.popularTvShows)
         ]);
-        
+
         setMovies(moviesData.results.slice(0, 5));
         setTvShows(tvData.results.slice(0, 5));
       } catch (error) {
@@ -53,10 +53,14 @@ export default function HomePage() {
           <>
             <div className="flex flex-wrap justify-center gap-6">
               {movies.map((movie) => (
-                <Card key={movie.id} className="rounded-2xl shadow-md overflow-hidden w-72">
+                <Card
+                  key={movie.id}
+                  className="rounded-2xl shadow w-72"
+                  onClick={() => window.location.href = `/movies/${movie.id}`}
+                >
                   <CardContent className="p-0">
-                    <img 
-                      src={movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'} 
+                    <img
+                      src={movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'}
                       alt={movie.title}
                       className="w-full h-96 object-cover"
                     />
@@ -67,6 +71,7 @@ export default function HomePage() {
                   </CardContent>
                 </Card>
               ))}
+
             </div>
             <div className="mt-8">
               <Button variant="contained" linkto="/movies">Vedi tutti i film</Button>
@@ -86,8 +91,8 @@ export default function HomePage() {
               {tvShows.map((show) => (
                 <Card key={show.id} className="rounded-2xl shadow-md overflow-hidden w-72">
                   <CardContent className="p-0">
-                    <img 
-                      src={show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'} 
+                    <img
+                      src={show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'}
                       alt={show.name}
                       className="w-full h-96 object-cover"
                     />
