@@ -1,0 +1,51 @@
+.search-page {
+  padding-top: 120px;
+  background-color: black;
+  min-height: 100vh;
+  color: white;
+  text-align: center;
+}
+
+.search-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.search-title span {
+  color: #ff0000;
+}
+
+.search-loading,
+.search-empty {
+  font-size: 1.3rem;
+  margin-top: 20px;
+}
+
+.search-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.search-card {
+  width: 180px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.search-card:hover {
+  transform: scale(1.05);
+}
+
+.search-img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.search-name {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #ccc;
+}

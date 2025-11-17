@@ -1,14 +1,14 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Header from "../components/Header/Header.jsx";
 import Footer from "../components/Footer/Footer.js";
 
 import Home from "../pages/Home/home.jsx";
 import Movies from "../pages/Movies/movies.jsx";
-import Dettaglio from "../pages/Dettaglio/dettaglio.jsx";
-// import Preferiti from "../pages/Preferiti/preferiti.jsx";
 import Serietv from "../pages/Serietv/serietv.jsx";
-import Ricerca from "../pages/Ricerca/ricerca.jsx";
+import Search from "../pages/Search/search.jsx";
+import Details from "../pages/Details/details.jsx";
 import NotFound from "../pages/NotFound/notfound.jsx";
 
 const AppRoutes = () => {
@@ -16,14 +16,13 @@ const AppRoutes = () => {
     <div className="container">
       <BrowserRouter>
         <Header />
-        <main >
+        <main>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/movies" element={<Movies />} /> {/* sarebbe lista nella FAD */}
-            <Route path="/movies/:id" element={<Dettaglio />} />  {/* dettaglio del film */}
+            <Route path="/movies" element={<Movies />} />
             <Route path="/serie-tv" element={<Serietv />} />
-            <Route path="/search" element={<Ricerca />} />
-            {/* <Route path="/preferiti" element={<Preferiti />} /> */}
+            <Route path="/search" element={<Search />} />
+            <Route path="/details/:type/:id" element={<Details />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

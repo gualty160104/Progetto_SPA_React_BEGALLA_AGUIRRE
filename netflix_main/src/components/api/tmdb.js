@@ -1,6 +1,6 @@
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
-//CHIAVE API 
+// CHIAVE API 
 const TMDB_API_KEY = '97bb4df7c0f0311371e40b55e3816b42'; 
 
 // Funzione riutilizzabile per il fetching
@@ -18,8 +18,6 @@ export const fetchFromTmdb = async (endpoint, params = {}) => {
         const response = await fetch(url);
         
         if (!response.ok) {
-            // Se la risposta non è OK (es. 401 Unauthorized), 
-            // stampiamo l'errore per diagnosticarlo facilmente.
             const errorData = await response.json(); 
             console.error("ERRORE TMDB (Verifica la chiave API!):", errorData);
             throw new Error(`Errore HTTP ${response.status}: ${errorData.status_message}`);
@@ -28,9 +26,7 @@ export const fetchFromTmdb = async (endpoint, params = {}) => {
         const data = await response.json();
         return data; 
     } catch (error) {
-        // Se c'è un errore di rete o un altro problema, viene catturato qui
         console.error("Errore generico durante il fetch:", error);
-        // Ritorna un oggetto sicuro ma vuoto per prevenire il crash
         return { results: [] }; 
     }
 };
@@ -42,4 +38,5 @@ export const ENDPOINTS = {
     popularTvShows: 'tv/popular',
     topRatedTvShows: 'tv/top_rated',
     trendingAll: 'trending/all/week',
+    searchMulti: 'search/multi',  // <-- aggiunto per la ricerca universale
 };

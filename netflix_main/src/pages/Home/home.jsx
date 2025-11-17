@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "../../components/Card/card";
 import { CardContent } from "../../components/CardContent/cardcontent";
 import { Button } from "../../components/Button/button";
@@ -11,6 +12,7 @@ export default function HomePage() {
   const [movies, setMovies] = useState([]);
   const [tvShows, setTvShows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,16 +35,20 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className=" w-screen flex flex-col gap-20 bg-black">
+    <div className="w-screen flex flex-col gap-20 bg-black">
 
       {/* Sezione Hero */}
       <div className="w-screen flex items-center justify-center bg-gray-200">
-        <section className="flex flex-col items-center justify-center w-full h-[70vh] bg-cover bg-center" style={{ backgroundImage: `url(${background})` }}>
-          <h1 className="text-9xl font-bold text-white text-center"> NETFLIX </h1>
-          <p className="text-xl text-white mt-2 text-center">Film, serie TV e tanto altro, senza limiti</p>
+        <section
+          className="flex flex-col items-center justify-center w-full h-[70vh] bg-cover bg-center"
+          style={{ backgroundImage: `url(${background})` }}
+        >
+          <h1 className="text-9xl font-bold text-white text-center">NETFLIX</h1>
+          <p className="text-xl text-white mt-2 text-center">
+            Film, serie TV e tanto altro, senza limiti
+          </p>
         </section>
       </div>
-
 
       {/* Film in evidenza */}
       <section className="w-screen text-center mt-16 px-4">
@@ -56,7 +62,7 @@ export default function HomePage() {
                 <Card
                   key={movie.id}
                   className="rounded-2xl shadow w-72"
-                  onClick={() => window.location.href = `/movies/${movie.id}`}
+                  onClick={() => navigate(`/details/movie/${movie.id}`)} // <-- aggiunto tipo "movie"
                 >
                   <CardContent className="p-0">
                     <img
@@ -71,10 +77,9 @@ export default function HomePage() {
                   </CardContent>
                 </Card>
               ))}
-
             </div>
             <div className="mt-8">
-              <Button variant="contained" linkto="/movies">Vedi tutti i film</Button>
+              <Button variant="contained" onClick={() => navigate("/movies")}>Vedi tutti i film</Button>
             </div>
           </>
         )}
@@ -89,7 +94,11 @@ export default function HomePage() {
           <>
             <div className="flex flex-wrap justify-center gap-6">
               {tvShows.map((show) => (
-                <Card key={show.id} className="rounded-2xl shadow-md overflow-hidden w-72">
+                <Card
+                  key={show.id}
+                  className="rounded-2xl shadow-md overflow-hidden w-72"
+                  onClick={() => navigate(`/details/tv/${show.id}`)} // <-- aggiunto tipo "tv"
+                >
                   <CardContent className="p-0">
                     <img
                       src={show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'}
@@ -105,7 +114,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="mt-8">
-              <Button variant="contained" onClick={() => window.location.href = "/serie-tv"}>Vedi tutte le serie TV</Button>
+              <Button variant="contained" onClick={() => navigate("/serie-tv")}>Vedi tutte le serie TV</Button>
             </div>
           </>
         )}
