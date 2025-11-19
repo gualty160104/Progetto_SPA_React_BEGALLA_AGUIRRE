@@ -21,7 +21,7 @@ const Header = () => {
       <div className="header-container">
 
         {/* LOGO */}
-        <div className="header-logo">
+        <div className="header-logo cursor-pointer" onClick={() => navigate("/")}>
           <img src={Netflix} alt="Netflix Logo" className="logo-image" />
         </div>
 
@@ -51,4 +51,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header; 

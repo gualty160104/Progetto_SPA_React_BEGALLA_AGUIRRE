@@ -13,7 +13,7 @@ import NotFound from "../pages/NotFound/notfound.jsx";
 
 const AppRoutes = () => {
   return (
-    <div className="container">
+    <div className="bg-black min-h-screen"> 
       <BrowserRouter>
         <Header />
         <main>

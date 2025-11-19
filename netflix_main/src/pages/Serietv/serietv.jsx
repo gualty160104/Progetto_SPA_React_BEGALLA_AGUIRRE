@@ -1,61 +1,108 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../../components/Card/card";
 import { CardContent } from "../../components/CardContent/cardcontent";
-import { fetchFromTmdb, ENDPOINTS } from "../../components/api/tmdb";
+import { fetchFromTmdb } from "../../components/api/tmdb";
+import { AiFillStar } from "react-icons/ai";
 
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
 const Serietv = () => {
   const [tvShows, setTvShows] = useState([]);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // <-- hook per navigazione
+  const navigate = useNavigate();
 
+  const loaderRef = useRef(null);
+
+  // Funzione per caricare una pagina di serie TV
+  const loadShows = async () => {
+    setLoading(true);
+    try {
+      // ⚡ Passaggio corretto del parametro page
+      const data = await fetchFromTmdb("discover/tv", { page });
+      setTvShows((prev) => [...prev, ...data.results]);
+    } catch (error) {
+      console.error("Errore nel caricamento serie TV:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Carica la prima pagina e le successive quando page cambia
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchFromTmdb(ENDPOINTS.popularTvShows);
-        setTvShows(data.results);
-      } catch (error) {
-        console.error("Errore nel caricamento delle serie TV:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    loadShows();
+  }, [page]);
 
-    fetchData();
-  }, []);
+  // Infinite scroll con IntersectionObserver
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { rootMargin: "200px" } // Si attiva prima di arrivare in fondo
+    );
+
+    if (loaderRef.current) observer.observe(loaderRef.current);
+
+    return () => observer.disconnect();
+  }, [loading]);
 
   return (
-    <section className="w-screen text-center mt-20 px-4 bg-black min-h-screen">
-      <h2 className="text-5xl font-semibold mb-10 text-red-600">Le serie TV in evidenza</h2>
+    <section className="w-screen min-h-screen bg-gradient-to-b from-black to-gray-900 px-6 py-16 pt-24 text-center">
+      
+      {/* Titolo */}
+      <h2 className="text-5xl font-extrabold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-red-400 drop-shadow-lg">
+        Serie TV
+      </h2>
 
-      {loading ? (
-        <p className="text-white text-xl">Caricamento...</p>
-      ) : (
-        <div className="flex flex-wrap justify-center gap-6">
-          {tvShows.map((show) => (
-            <Card
-              key={show.id}
-              className="rounded-2xl shadow-md overflow-hidden w-72"
-              onClick={() => navigate(`/details/tv/${show.id}`)} // <-- naviga al dettaglio
-            >
-              <CardContent className="p-0">
-                <img
-                  src={show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'}
-                  alt={show.name}
-                  className="w-full h-96 object-cover"
-                />
-                <div className="p-4 text-center">
-                  <h3 className="text-lg font-bold text-white">{show.name}</h3>
-                  <p className="text-sm text-gray-400">{show.first_air_date?.split('-')[0] || 'N/A'}</p>
-                  <p className="text-sm text-gray-500 mt-2"> {show.vote_average?.toFixed(1)}</p>
+      {/* Griglia serie */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 max-w-7xl mx-auto">
+        {tvShows.map((show) => (
+          <Card
+            key={show.id}
+            className="rounded-2xl shadow-lg overflow-hidden transition transform hover:scale-105 hover:shadow-2xl cursor-pointer duration-300 bg-gray-900"
+            onClick={() => navigate(`/details/tv/${show.id}`)}
+          >
+            <CardContent className="p-0">
+              
+              {/* Poster */}
+              <img
+                src={
+                  show.poster_path
+                    ? `${IMAGE_BASE_URL}${show.poster_path}`
+                    : "https://via.placeholder.com/500x750?text=No+Image"
+                }
+                alt={show.name}
+                className="w-full h-96 object-cover"
+              />
+
+              {/* Info */}
+              <div className="p-4 text-center">
+                <h3 className="text-lg font-bold text-white">{show.name}</h3>
+                <p className="text-sm text-gray-400">
+                  {show.first_air_date?.split("-")[0] || "N/A"}
+                </p>
+                <div className="flex items-center justify-center gap-1 mt-2">
+                  <AiFillStar className="text-yellow-400 text-lg" />
+                  <span className="text-sm text-gray-300">
+                    {show.vote_average?.toFixed(1)}
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+              </div>
+
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Loader / trigger per infinite scroll */}
+      <div ref={loaderRef} className="text-white text-lg mt-10 mb-20">
+        {loading ? "Caricamento..." : "Scorri per caricare di più"}
+      </div>
+
     </section>
   );
 };

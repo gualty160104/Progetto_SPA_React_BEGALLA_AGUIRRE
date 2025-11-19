@@ -26,7 +26,7 @@ export default function Search() {
 
         const combined = [...moviesWithType, ...tvWithType];
 
-        // Opzionale: filtra i risultati senza immagini
+        // Filtra risultati senza immagini
         const filtered = combined.filter(item => item.poster_path || item.backdrop_path);
 
         setResults(filtered);
@@ -42,30 +42,30 @@ export default function Search() {
 
   if (!query) {
     return (
-      <div style={{ paddingTop: '120px', textAlign: 'center', color: 'white' }}>
+      <div className="pt-32 text-center text-white">
         <p>Inserisci qualcosa nella ricerca...</p>
       </div>
     );
   }
 
   return (
-    <section style={{ paddingTop: '120px', backgroundColor: 'black', minHeight: '100vh', color: 'white', textAlign: 'center' }}>
-      <h2 style={{ fontSize: '2rem', marginBottom: '20px' }}>
-        Risultati per "<span style={{ color: '#ff0000' }}>{query}</span>"
+    <section className="pt-32 pb-28 min-h-screen bg-black text-white text-center">
+      <h2 className="text-3xl mb-6">
+        Risultati per "<span className="text-red-600">{query}</span>"
       </h2>
 
       {loading ? (
-        <p style={{ fontSize: '1.3rem', marginTop: '20px' }}>Caricamento...</p>
+        <p className="text-lg mt-5">Caricamento...</p>
       ) : results.length === 0 ? (
-        <p style={{ fontSize: '1.3rem', marginTop: '20px' }}>Nessun risultato trovato.</p>
+        <p className="text-lg mt-5">Nessun risultato trovato.</p>
       ) : (
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px', padding: '20px' }}>
+        <div className="flex flex-wrap justify-center gap-6 px-4">
           {results.map((item) => {
             const image = item.poster_path
               ? `${IMAGE_BASE_URL}${item.poster_path}`
               : item.backdrop_path
               ? `${IMAGE_BASE_URL}${item.backdrop_path}`
-              : "https://fakeimg.pl/500x750/000/fff/?text=Nessuna+Immagine"; // fallback
+              : "https://fakeimg.pl/500x750/000/fff/?text=Nessuna+Immagine";
 
             const title = item.title || item.name || "Titolo non disponibile";
 
@@ -73,17 +73,15 @@ export default function Search() {
               <div
                 key={item.id + "-" + item.type}
                 onClick={() => navigate(`/details/${item.type}/${item.id}`)}
-                style={{ cursor: 'pointer', width: '180px', transition: 'transform 0.2s' }}
-                onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+                className="cursor-pointer w-44 transition-transform duration-200 hover:scale-105"
               >
                 <img
                   src={image}
                   alt={title}
-                  style={{ width: '100%', height: '270px', objectFit: 'cover', borderRadius: '10px' }}
+                  className="w-full h-64 object-cover rounded-lg"
                 />
-                <div style={{ marginTop: '8px', fontSize: '0.9rem', color: '#ccc' }}>{title}</div>
-                <div style={{ fontSize: '0.8rem', color: '#888' }}>
+                <div className="mt-2 text-gray-300 text-sm">{title}</div>
+                <div className="text-gray-500 text-xs">
                   {(item.type === "movie"
                     ? item.release_date?.split("-")[0]
                     : item.first_air_date?.split("-")[0]) || "N/A"}{" "}

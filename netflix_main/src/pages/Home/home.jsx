@@ -5,6 +5,7 @@ import { CardContent } from "../../components/CardContent/cardcontent";
 import { Button } from "../../components/Button/button";
 import background from "../../assets/background.jpg";
 import { fetchFromTmdb, ENDPOINTS } from "../../components/api/tmdb";
+import { AiFillStar } from "react-icons/ai";
 
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
@@ -35,59 +36,29 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="w-screen flex flex-col gap-20 bg-black">
+    <div className="w-screen flex flex-col gap-20 bg-black pb-32">
 
       {/* Sezione Hero */}
-      <div className="w-screen flex items-center justify-center bg-gray-200">
-        <section
-          className="flex flex-col items-center justify-center w-full h-[70vh] bg-cover bg-center"
-          style={{ backgroundImage: `url(${background})` }}
-        >
-          <h1 className="text-9xl font-bold text-white text-center">NETFLIX</h1>
-          <p className="text-xl text-white mt-2 text-center">
+      <section
+        className="relative w-screen h-[80vh] flex items-center justify-center bg-center bg-cover"
+        style={{ backgroundImage: `url(${background})` }}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
+          <h1 className="text-6xl sm:text-7xl md:text-9xl font-extrabold text-white drop-shadow-xl">
+            NETFLIX
+          </h1>
+          <p className="text-lg sm:text-xl md:text-2xl text-white mt-4 max-w-2xl drop-shadow-md">
             Film, serie TV e tanto altro, senza limiti
           </p>
-        </section>
-      </div>
-
-      {/* Film in evidenza */}
-      <section className="w-screen text-center mt-16 px-4">
-        <h2 className="text-5xl font-semibold mb-10 text-red-600">I film in evidenza</h2>
-        {loading ? (
-          <p className="text-white">Caricamento...</p>
-        ) : (
-          <>
-            <div className="flex flex-wrap justify-center gap-6">
-              {movies.map((movie) => (
-                <Card
-                  key={movie.id}
-                  className="rounded-2xl shadow w-72"
-                  onClick={() => navigate(`/details/movie/${movie.id}`)} // <-- aggiunto tipo "movie"
-                >
-                  <CardContent className="p-0">
-                    <img
-                      src={movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'}
-                      alt={movie.title}
-                      className="w-full h-96 object-cover"
-                    />
-                    <div className="p-4 text-center">
-                      <h3 className="text-lg font-bold text-white">{movie.title}</h3>
-                      <p className="text-sm text-gray-400">{movie.release_date?.split('-')[0] || 'N/A'}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            <div className="mt-8">
-              <Button variant="contained" onClick={() => navigate("/movies")}>Vedi tutti i film</Button>
-            </div>
-          </>
-        )}
+        </div>
       </section>
 
       {/* Serie TV in evidenza */}
       <section className="w-screen text-center mt-16 px-4">
-        <h2 className="text-5xl font-semibold mb-10 text-red-600">Le serie TV in evidenza</h2>
+        <h2 className="text-5xl font-extrabold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-red-400 drop-shadow-lg">
+          Le serie TV in evidenza
+        </h2>
         {loading ? (
           <p className="text-white">Caricamento...</p>
         ) : (
@@ -96,8 +67,8 @@ export default function HomePage() {
               {tvShows.map((show) => (
                 <Card
                   key={show.id}
-                  className="rounded-2xl shadow-md overflow-hidden w-72"
-                  onClick={() => navigate(`/details/tv/${show.id}`)} // <-- aggiunto tipo "tv"
+                  className="rounded-2xl shadow-lg overflow-hidden w-72 transition transform hover:scale-105 hover:shadow-2xl cursor-pointer duration-300 bg-gray-900"
+                  onClick={() => navigate(`/details/tv/${show.id}`)}
                 >
                   <CardContent className="p-0">
                     <img
@@ -108,13 +79,62 @@ export default function HomePage() {
                     <div className="p-4 text-center">
                       <h3 className="text-lg font-bold text-white">{show.name}</h3>
                       <p className="text-sm text-gray-400">{show.first_air_date?.split('-')[0] || 'N/A'}</p>
+                      <div className="flex items-center justify-center gap-1 mt-2">
+                        <AiFillStar className="text-yellow-400 text-lg" />
+                        <span className="text-sm text-gray-300">{show.vote_average?.toFixed(1)}</span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
             <div className="mt-8">
-              <Button variant="contained" onClick={() => navigate("/serie-tv")}>Vedi tutte le serie TV</Button>
+              <Button variant="contained" onClick={() => navigate("/serie-tv")}>
+                Vedi tutte le serie TV
+              </Button>
+            </div>
+          </>
+        )}
+      </section>
+
+      {/* Film in evidenza */}
+      <section className="w-screen text-center mt-16 px-4">
+        <h2 className="text-5xl font-extrabold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-red-400 drop-shadow-lg">
+          I film in evidenza
+        </h2>
+        {loading ? (
+          <p className="text-white">Caricamento...</p>
+        ) : (
+          <>
+            <div className="flex flex-wrap justify-center gap-6">
+              {movies.map((movie) => (
+                <Card
+                  key={movie.id}
+                  className="rounded-2xl shadow-lg overflow-hidden w-72 transition transform hover:scale-105 hover:shadow-2xl cursor-pointer duration-300 bg-gray-900"
+                  onClick={() => navigate(`/details/movie/${movie.id}`)}
+                >
+                  <CardContent className="p-0">
+                    <img
+                      src={movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'}
+                      alt={movie.title}
+                      className="w-full h-96 object-cover"
+                    />
+                    <div className="p-4 text-center">
+                      <h3 className="text-lg font-bold text-white">{movie.title}</h3>
+                      <p className="text-sm text-gray-400">{movie.release_date?.split('-')[0] || 'N/A'}</p>
+                      <div className="flex items-center justify-center gap-1 mt-2">
+                        <AiFillStar className="text-yellow-400 text-lg" />
+                        <span className="text-sm text-gray-300">{movie.vote_average?.toFixed(1)}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="mt-8">
+              <Button variant="contained" onClick={() => navigate("/movies")}>
+                Vedi tutti i film
+              </Button>
             </div>
           </>
         )}
