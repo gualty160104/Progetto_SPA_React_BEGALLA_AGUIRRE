@@ -16,7 +16,7 @@
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
-  justify-content: space-between; /* logo a sinistra, nav e search a destra */
+  justify-content: space-between; /* logo a sinistra, nav+search a destra */
   align-items: center;
   gap: 20px;
 }
@@ -25,11 +25,11 @@
 .header-logo {
   display: flex;
   align-items: center;
-  width: 40px; /* più piccolo */
+  cursor: pointer;
 }
 
 .logo-image {
-  width: 100%;
+  width: 40px; /* dimensione logo più visibile */
   height: auto;
 }
 

@@ -2,6 +2,7 @@ import { AiFillStar } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchFromTmdb } from "../../components/api/tmdb";
+import { useFavorites } from "../../context/FavoriteContext";
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/original";
@@ -10,6 +11,8 @@ const Details = () => {
   const { type, id } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -23,7 +26,6 @@ const Details = () => {
         setLoading(false);
       }
     };
-
     fetchDetails();
   }, [type, id]);
 
@@ -31,6 +33,22 @@ const Details = () => {
     return <p className="text-white text-center mt-20 text-xl">Caricamento...</p>;
   if (!data)
     return <p className="text-white text-center mt-20 text-xl">Dettagli non disponibili</p>;
+
+  const isFavorite = favorites.some(f => f.id === data.id && f.type === type);
+
+  const handleFavoriteClick = () => {
+    if (isFavorite) {
+      removeFavorite(data.id, type);
+    } else {
+      addFavorite({
+        id: data.id,
+        type: type,
+        title: data.title,
+        name: data.name,
+        poster_path: data.poster_path,
+      });
+    }
+  };
 
   return (
     <div
@@ -43,12 +61,9 @@ const Details = () => {
         backgroundPosition: "center",
       }}
     >
-      {/* Overlay scuro */}
       <div className="absolute inset-0 bg-black bg-opacity-70"></div>
 
       <div className="relative flex flex-col md:flex-row items-center md:items-start max-w-6xl mx-auto gap-8">
-        
-        {/* Poster */}
         <img
           src={
             data.poster_path
@@ -59,7 +74,6 @@ const Details = () => {
           className="w-64 md:w-80 rounded-xl shadow-2xl flex-shrink-0"
         />
 
-        {/* Info */}
         <div className="flex-1 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             {data.title || data.name}
@@ -79,7 +93,15 @@ const Details = () => {
             {data.overview || "Nessuna descrizione disponibile."}
           </p>
 
-          {/* Extra info */}
+          <button
+            onClick={handleFavoriteClick}
+            className={`px-6 py-2 rounded-lg font-semibold mt-4 ${
+              isFavorite ? "bg-red-600 hover:bg-red-700" : "bg-gray-700 hover:bg-gray-600"
+            }`}
+          >
+            {isFavorite ? "Rimuovi dai Preferiti" : "Aggiungi ai Preferiti"}
+          </button>
+
           <div className="flex flex-wrap gap-4 mt-4 justify-center md:justify-start">
             {data.genres?.map((genre) => (
               <span

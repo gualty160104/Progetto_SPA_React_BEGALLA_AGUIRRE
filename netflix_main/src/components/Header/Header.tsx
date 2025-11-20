@@ -3,15 +3,20 @@ import { useState } from "react";
 import Netflix from "../../assets/netflix.png";
 import "./Header.css";
 
+// ❤️ Importiamo il context
+import { useFavorites } from "../../context/FavoriteContext";
+
 const Header = () => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+
+  // ❤️ Otteniamo i preferiti dal context
+  const { favorites } = useFavorites();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
 
-    // Passiamo la query direttamente nell'URL
     navigate(`/search?query=${encodeURIComponent(query)}`);
     setQuery("");
   };
@@ -25,13 +30,17 @@ const Header = () => {
           <img src={Netflix} alt="Netflix Logo" className="logo-image" />
         </div>
 
-        {/* NAV + SEARCH WRAPPER */}
+        {/* NAV + SEARCH */}
         <div className="nav-search-wrapper">
+
           {/* NAV */}
           <nav className="header-nav">
             <NavLink to="/" className="nav-link">Home</NavLink>
             <NavLink to="/serie-tv" className="nav-link">Serie TV</NavLink>
             <NavLink to="/movies" className="nav-link">Film</NavLink>
+            <NavLink to="/preferiti" className="nav-link">
+              Preferiti {favorites.length > 0 && `(${favorites.length})`}
+            </NavLink>
           </nav>
 
           {/* SEARCH BAR */}
@@ -44,11 +53,11 @@ const Header = () => {
               className="search-input"
             />
           </form>
-        </div>
 
+        </div>
       </div>
     </header>
   );
 };
 
-export default Header; 
+export default Header;

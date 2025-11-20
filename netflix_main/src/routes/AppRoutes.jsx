@@ -9,6 +9,7 @@ import Movies from "../pages/Movies/movies.jsx";
 import Serietv from "../pages/Serietv/serietv.jsx";
 import Search from "../pages/Search/search.jsx";
 import Details from "../pages/Details/details.jsx";
+import Favorites from "../pages/Favorites/Favorites.jsx"; // ✅ importa il nuovo componente
 import NotFound from "../pages/NotFound/notfound.jsx";
 
 const AppRoutes = () => {
@@ -23,6 +24,7 @@ const AppRoutes = () => {
             <Route path="/serie-tv" element={<Serietv />} />
             <Route path="/search" element={<Search />} />
             <Route path="/details/:type/:id" element={<Details />} />
+            <Route path="/preferiti" element={<Favorites />} /> {/* ✅ nuova rotta */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
