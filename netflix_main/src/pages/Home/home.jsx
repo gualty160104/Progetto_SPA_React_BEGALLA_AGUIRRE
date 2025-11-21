@@ -33,7 +33,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className=" w-screen flex flex-col gap-20 bg-black">
+    <div className=" w-screen flex flex-col gap-20">
 
       {/* Sezione Hero */}
       <div className="w-screen flex items-center justify-center bg-gray-200">
@@ -53,7 +53,7 @@ export default function HomePage() {
           <>
             <div className="flex flex-wrap justify-center gap-6">
               {movies.map((movie) => (
-                <Card key={movie.id} className="rounded-2xl shadow-md overflow-hidden w-72">
+                <Card key={movie.id} className="rounded-2xl shadow-md overflow-hidden w-72 bg-black">
                   <CardContent className="p-0">
                     <img 
                       src={movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'} 
@@ -69,7 +69,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="mt-8">
-              <Button variant="contained">Vedi tutti i film</Button>
+              <Button linkTo="/movies" variant="contained">Vedi tutti i film</Button>
             </div>
           </>
         )}
@@ -84,7 +84,7 @@ export default function HomePage() {
           <>
             <div className="flex flex-wrap justify-center gap-6">
               {tvShows.map((show) => (
-                <Card key={show.id} className="rounded-2xl shadow-md overflow-hidden w-72">
+                <Card key={show.id} className="rounded-2xl shadow-md overflow-hidden w-72 bg-black">
                   <CardContent className="p-0">
                     <img 
                       src={show.poster_path ? `${IMAGE_BASE_URL}${show.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image'} 
@@ -100,7 +100,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="mt-8">
-              <Button variant="contained">Vedi tutte le serie TV</Button>
+              <Button linkTo="/serie-tv" variant="contained">Vedi tutte le serie TV</Button>
             </div>
           </>
         )}
