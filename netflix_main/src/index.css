@@ -8,3 +8,8 @@ html, body, #root {
   padding: 0;
   width: 100%;
 }
+.container{
+  max-width: 100%;
+  margin: 0 auto;
+  background-color: black;
+}
