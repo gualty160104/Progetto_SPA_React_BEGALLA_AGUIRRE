@@ -100,7 +100,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="mt-8">
-              <Button variant="contained" onClick={() => window.location.href = "/serie-tv"}>Vedi tutte le serie TV</Button>
+              <Button variant="contained" linkto="/serie-tv">Vedi tutte le serie TV</Button>
             </div>
           </>
         )}
