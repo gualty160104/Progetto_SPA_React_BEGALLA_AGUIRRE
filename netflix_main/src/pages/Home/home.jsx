@@ -37,9 +37,9 @@ export default function HomePage() {
 
       {/* Sezione Hero */}
       <div className="w-screen flex items-center justify-center bg-gray-200">
-        <section className="flex flex-col items-center justify-center w-full h-[70vh] bg-cover bg-center" style={{ backgroundImage: `url(${background})` }}>
-          <h1 className="text-9xl font-bold text-white text-center"> NETFLIX </h1>
-          <p className="text-xl text-white mt-2 text-center">Film, serie TV e tanto altro, senza limiti</p>
+        <section className="flex flex-col items-center justify-center w-full h-[70vh] bg-cover bg-center px-4" style={{ backgroundImage: `url(${background})` }}>
+          <h1 className="text-5xl sm:text-7xl md:text-9xl font-bold text-white text-center"> NETFLIX </h1>
+          <p className="text-base sm:text-lg md:text-xl text-white mt-2 text-center px-4">Film, serie TV e tanto altro, senza limiti</p>
         </section>
       </div>
 
