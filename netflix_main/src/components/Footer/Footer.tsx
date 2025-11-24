@@ -3,7 +3,7 @@ import { AiFillHeart } from "react-icons/ai";
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-[#f2f2f2] py-10 px-6">
+    <footer className="bg-black text-[#f2f2f2] py-10 px-6 border-t-2 border-red-600">
 
       {/* Contenitore centrato, con allineamento verticale al centro */}
       <div className="max-w-screen-xl mx-auto flex flex-wrap justify-center items-center gap-16 mb-10 text-center">
