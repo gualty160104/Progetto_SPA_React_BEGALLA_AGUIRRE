@@ -4,22 +4,20 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 const FavoritesContext = createContext();
 
 export function FavoritesProvider({ children }) {
-  const STORAGE_KEY = "favorites_v1"; // puoi cambiare versione se aggiorni shape
+  const STORAGE_KEY = "favorites_v1";
   const [favorites, setFavorites] = useState([]);
 
-  // Carica i preferiti da localStorage all'inizio
+  // Carica da localStorage
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        setFavorites(JSON.parse(saved));
-      }
+      if (saved) setFavorites(JSON.parse(saved));
     } catch (err) {
       console.error("Errore parsing favorites da localStorage:", err);
     }
   }, []);
 
-  // Salva su localStorage ad ogni modifica
+  // Salva su localStorage
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
@@ -28,15 +26,13 @@ export function FavoritesProvider({ children }) {
     }
   }, [favorites]);
 
-  // Sincronizza i preferiti tra più tab (opzionale ma utile)
+  // Sincronizza tra tab
   useEffect(() => {
     const onStorage = (e) => {
       if (e.key === STORAGE_KEY && e.newValue) {
         try {
           setFavorites(JSON.parse(e.newValue));
-        } catch {
-          // ignore
-        }
+        } catch {}
       }
     };
     window.addEventListener("storage", onStorage);
@@ -44,7 +40,6 @@ export function FavoritesProvider({ children }) {
   }, []);
 
   const addFavorite = (item) => {
-    // item deve contenere almeno: { id, type, title, poster_path? }
     if (!item || !item.id || !item.type) return;
     setFavorites((prev) => {
       const exists = prev.some((f) => f.id === item.id && f.type === item.type);
@@ -57,9 +52,7 @@ export function FavoritesProvider({ children }) {
     setFavorites((prev) => prev.filter((f) => !(f.id === id && f.type === type)));
   };
 
-  const isFavorite = (id, type) => {
-    return favorites.some((f) => f.id === id && f.type === type);
-  };
+  const isFavorite = (id, type) => favorites.some((f) => f.id === id && f.type === type);
 
   return (
     <FavoritesContext.Provider
@@ -70,11 +63,12 @@ export function FavoritesProvider({ children }) {
   );
 }
 
-// custom hook per usarlo comodamente
+// Hook per usare il context
 export function useFavorites() {
   const ctx = useContext(FavoritesContext);
-  if (!ctx) {
-    throw new Error("useFavorites deve essere usato dentro FavoritesProvider");
-  }
+  if (!ctx) throw new Error("useFavorites deve essere usato dentro FavoritesProvider");
   return ctx;
 }
+
+// ✅ Esporta anche come default per semplificare l'import
+export default FavoritesProvider;

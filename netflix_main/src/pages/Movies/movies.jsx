@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../../components/Card/card";
 import { CardContent } from "../../components/CardContent/cardcontent";
@@ -10,10 +10,9 @@ const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const Movies = () => {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true); // per verificare se ci sono altre pagine
   const navigate = useNavigate();
-
-  const loaderRef = useRef(null);
 
   // Funzione per caricare una pagina di film
   const loadMovies = async () => {
@@ -21,6 +20,9 @@ const Movies = () => {
     try {
       const data = await fetchFromTmdb("discover/movie", { page });
       setMovies((prev) => [...prev, ...data.results]);
+      if (data.page >= data.total_pages) {
+        setHasMore(false); // non ci sono altre pagine
+      }
     } catch (error) {
       console.error("Errore nel caricamento dei film:", error);
     } finally {
@@ -33,21 +35,11 @@ const Movies = () => {
     loadMovies();
   }, [page]);
 
-  // Infinite scroll con IntersectionObserver
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { rootMargin: "200px" }
-    );
-
-    if (loaderRef.current) observer.observe(loaderRef.current);
-
-    return () => observer.disconnect();
-  }, [loading]);
+  const handleLoadMore = () => {
+    if (!loading && hasMore) {
+      setPage((prev) => prev + 1);
+    }
+  };
 
   return (
     <section className="w-screen min-h-screen bg-gradient-to-b from-black to-gray-900 px-6 py-16 pt-24 text-center">
@@ -97,10 +89,16 @@ const Movies = () => {
         ))}
       </div>
 
-      {/* Loader / trigger per infinite scroll */}
-      <div ref={loaderRef} className="text-white text-lg mt-10 mb-20">
-        {loading ? "Caricamento..." : "Scorri per caricare di più"}
-      </div>
+      {/* Bottone Carica di più */}
+      {hasMore && (
+        <button
+          onClick={handleLoadMore}
+          className="mt-12 px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200"
+          disabled={loading}
+        >
+          {loading ? "Caricamento..." : "Carica di più"}
+        </button>
+      )}
 
     </section>
   );

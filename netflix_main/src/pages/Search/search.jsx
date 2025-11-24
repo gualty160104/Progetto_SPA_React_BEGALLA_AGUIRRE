@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchFromTmdb } from "../../components/api/tmdb";
-
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+import { AiFillStar } from "react-icons/ai";
+import { useFetchTmdb } from "../../hooks/useFetchTmdb";
+import { IMAGE_BASE_URL } from "../../components/api/tmdb";
 
 export default function Search() {
   const location = useLocation();
@@ -10,35 +9,20 @@ export default function Search() {
   const params = new URLSearchParams(location.search);
   const query = params.get("query");
 
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Se non c'è query, non fare fetch
+  const movieEndpoint = query ? `search/movie?query=${encodeURIComponent(query)}` : null;
+  const tvEndpoint = query ? `search/tv?query=${encodeURIComponent(query)}` : null;
 
-  useEffect(() => {
-    if (!query) return;
+  const { data: moviesData, loading: loadingMovies } = useFetchTmdb(movieEndpoint);
+  const { data: tvData, loading: loadingTv } = useFetchTmdb(tvEndpoint);
 
-    const fetchResults = async () => {
-      try {
-        const dataMovies = await fetchFromTmdb(`search/movie`, { query });
-        const dataTv = await fetchFromTmdb(`search/tv`, { query });
+  const loading = loadingMovies || loadingTv;
 
-        const moviesWithType = dataMovies.results.map(item => ({ ...item, type: "movie" }));
-        const tvWithType = dataTv.results.map(item => ({ ...item, type: "tv" }));
-
-        const combined = [...moviesWithType, ...tvWithType];
-
-        // Filtra risultati senza immagini
-        const filtered = combined.filter(item => item.poster_path || item.backdrop_path);
-
-        setResults(filtered);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchResults();
-  }, [query]);
+  // Combina risultati e aggiunge il tipo
+  const results = [
+    ...(moviesData?.results?.map(item => ({ ...item, type: "movie" })) || []),
+    ...(tvData?.results?.map(item => ({ ...item, type: "tv" })) || [])
+  ].filter(item => item.poster_path || item.backdrop_path);
 
   if (!query) {
     return (
@@ -71,7 +55,7 @@ export default function Search() {
 
             return (
               <div
-                key={item.id + "-" + item.type}
+                key={`${item.id}-${item.type}`}
                 onClick={() => navigate(`/details/${item.type}/${item.id}`)}
                 className="cursor-pointer w-44 transition-transform duration-200 hover:scale-105"
               >
@@ -80,8 +64,14 @@ export default function Search() {
                   alt={title}
                   className="w-full h-64 object-cover rounded-lg"
                 />
-                <div className="mt-2 text-gray-300 text-sm">{title}</div>
-                <div className="text-gray-500 text-xs">
+                <div className="mt-2 text-gray-300 text-sm font-semibold">{title}</div>
+
+                <div className="flex items-center justify-center gap-1 mt-1 text-yellow-400 text-sm">
+                  <AiFillStar />
+                  <span>{item.vote_average?.toFixed(1) || "N/A"}</span>
+                </div>
+
+                <div className="text-gray-500 text-xs mt-1">
                   {(item.type === "movie"
                     ? item.release_date?.split("-")[0]
                     : item.first_air_date?.split("-")[0]) || "N/A"}{" "}

@@ -1,53 +1,29 @@
 import { AiFillStar } from "react-icons/ai";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchFromTmdb } from "../../components/api/tmdb";
 import { useFavorites } from "../../context/FavoriteContext";
-
-const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
-const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/original";
+import { useFetchTmdb } from "../../hooks/useFetchTmdb";
+import { IMAGE_BASE_URL, BACKDROP_BASE_URL } from "../../components/api/tmdb";
 
 const Details = () => {
   const { type, id } = useParams();
-  const [data, setData] = useState(null);
-  const [cast, setCast] = useState([]); // Nuovo stato per il cast
-  const [loading, setLoading] = useState(true);
-
   const { favorites, addFavorite, removeFavorite } = useFavorites();
 
-  useEffect(() => {
-    const fetchDetails = async () => {
-      try {
-        const endpoint = type === "movie" ? `movie/${id}` : `tv/${id}`;
-        const result = await fetchFromTmdb(endpoint);
-        setData(result);
+  // Fetch dettagli e cast tramite custom hook
+  const { data, loading } = useFetchTmdb(type && id ? `${type}/${id}` : null);
+  const { data: creditsData } = useFetchTmdb(type && id ? `${type}/${id}/credits` : null);
 
-        // Fetch del cast principale
-        const credits = await fetchFromTmdb(`${endpoint}/credits`);
-        setCast(credits.cast?.slice(0, 6) || []);
-      } catch (error) {
-        console.error("Errore nel caricamento dei dettagli:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchDetails();
-  }, [type, id]);
-
-  if (loading)
-    return <p className="text-white text-center mt-20 text-xl">Caricamento...</p>;
-  if (!data)
-    return <p className="text-white text-center mt-20 text-xl">Dettagli non disponibili</p>;
-
-  const isFavorite = favorites.some(f => f.id === data.id && f.type === type);
+  const cast = creditsData?.cast?.slice(0, 6) || [];
+  const isFavorite = data && favorites.some(f => f.id === data.id && f.type === type);
 
   const handleFavoriteClick = () => {
+    if (!data) return;
+
     if (isFavorite) {
       removeFavorite(data.id, type);
     } else {
       addFavorite({
         id: data.id,
-        type: type,
+        type,
         title: data.title,
         name: data.name,
         poster_path: data.poster_path,
@@ -57,6 +33,12 @@ const Details = () => {
       });
     }
   };
+
+  if (loading)
+    return <p className="text-white text-center mt-20 text-xl">Caricamento...</p>;
+
+  if (!data)
+    return <p className="text-white text-center mt-20 text-xl">Dettagli non disponibili</p>;
 
   return (
     <div
@@ -72,34 +54,26 @@ const Details = () => {
       <div className="absolute inset-0 bg-black bg-opacity-70"></div>
 
       <div className="relative flex flex-col md:flex-row items-center md:items-start max-w-6xl mx-auto gap-8">
+        {/* Poster */}
         <img
-          src={
-            data.poster_path
-              ? `${IMAGE_BASE_URL}${data.poster_path}`
-              : "https://via.placeholder.com/500x750?text=No+Image"
-          }
+          src={data.poster_path ? `${IMAGE_BASE_URL}${data.poster_path}` : "https://via.placeholder.com/500x750?text=No+Image"}
           alt={data.title || data.name}
           className="w-64 md:w-80 rounded-xl shadow-2xl flex-shrink-0"
         />
 
+        {/* Info principali */}
         <div className="flex-1 text-center md:text-left">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            {data.title || data.name}
-          </h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{data.title || data.name}</h1>
 
-          <p className="text-gray-300 mb-4 text-lg flex items-center justify-center md:justify-start gap-1">
-            {data.release_date?.split("-")[0] ||
-              data.first_air_date?.split("-")[0] ||
-              "N/A"}
+          <p className="text-gray-300 mb-4 text-lg flex items-center justify-center md:justify-start gap-2">
+            {data.release_date?.split("-")[0] || data.first_air_date?.split("-")[0] || "N/A"}
             <span className="flex items-center gap-1">
               <AiFillStar className="text-yellow-400" />
               {data.vote_average?.toFixed(1)}
             </span>
           </p>
 
-          <p className="mb-4 text-gray-200 leading-relaxed">
-            {data.overview || "Nessuna descrizione disponibile."}
-          </p>
+          <p className="mb-4 text-gray-200 leading-relaxed">{data.overview || "Nessuna descrizione disponibile."}</p>
 
           <button
             onClick={handleFavoriteClick}
@@ -110,12 +84,10 @@ const Details = () => {
             {isFavorite ? "Rimuovi dai Preferiti" : "Aggiungi ai Preferiti"}
           </button>
 
+          {/* Generi e durata */}
           <div className="flex flex-wrap gap-4 mt-4 justify-center md:justify-start">
-            {data.genres?.map((genre) => (
-              <span
-                key={genre.id}
-                className="bg-red-600 px-3 py-1 rounded-full text-sm font-medium"
-              >
+            {data.genres?.map(genre => (
+              <span key={genre.id} className="bg-red-600 px-3 py-1 rounded-full text-sm font-medium">
                 {genre.name}
               </span>
             ))}
@@ -126,32 +98,27 @@ const Details = () => {
             )}
           </div>
 
-{/* CAST PRINCIPALE */}
-{cast.length > 0 && (
-  <div className="mt-8">
-    <h2 className="text-3xl md:text-4xl font-bold mb-6">Cast principale</h2>
-    <div className="flex overflow-x-auto gap-4 py-2">
-      {cast.map((actor) => (
-        <div
-          key={actor.id}
-          className="flex-shrink-0 w-24 text-center bg-gray-900 rounded-lg shadow-lg p-2 hover:scale-105 transform transition-transform duration-200"
-        >
-          <img
-            src={
-              actor.profile_path
-                ? `${IMAGE_BASE_URL}${actor.profile_path}`
-                : "https://via.placeholder.com/100x150?text=No+Image"
-            }
-            alt={actor.name}
-            className="w-24 h-32 object-cover rounded-lg mb-2"
-          />
-          <span className="text-sm text-gray-200">{actor.name}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
-
+          {/* Cast principale */}
+          {cast.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">Cast principale</h2>
+              <div className="flex overflow-x-auto gap-4 py-2">
+                {cast.map(actor => (
+                  <div
+                    key={actor.id}
+                    className="flex-shrink-0 w-24 text-center bg-gray-900 rounded-lg shadow-lg p-2 hover:scale-105 transform transition-transform duration-200"
+                  >
+                    <img
+                      src={actor.profile_path ? `${IMAGE_BASE_URL}${actor.profile_path}` : "https://via.placeholder.com/100x150?text=No+Image"}
+                      alt={actor.name}
+                      className="w-24 h-32 object-cover rounded-lg mb-2"
+                    />
+                    <span className="text-sm text-gray-200">{actor.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

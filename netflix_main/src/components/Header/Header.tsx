@@ -21,7 +21,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-black shadow-md z-[1000] py-2.5 px-5">
+    <header className="fixed top-0 left-0 w-full bg-black shadow-md z-[1000] py-3.5 px-5">
       <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-5 md:gap-5">
 
         {/* LOGO - centrato su mobile, a sinistra da md in su */}
