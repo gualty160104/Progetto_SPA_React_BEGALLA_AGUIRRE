@@ -2,14 +2,14 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Netflix from "../../assets/netflix.png";
 
-// ❤️ Importiamo il context
+// Importiamo il context
 import { useFavorites } from "../../context/FavoriteContext";
 
 const Header = () => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
 
-  // ❤️ Otteniamo i preferiti dal context
+  // Otteniamo i preferiti dal context
   const { favorites } = useFavorites();
 
   const handleSubmit = (e: React.FormEvent) => {

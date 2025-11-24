@@ -5,11 +5,11 @@ const Footer = () => {
   return (
     <footer className="bg-black text-[#f2f2f2] py-10 px-6 border-t-2 border-red-600">
 
-      {/* Contenitore centrato, con allineamento verticale al centro */}
-      <div className="max-w-screen-xl mx-auto flex flex-wrap justify-center items-center gap-16 mb-10 text-center">
-
-        {/* Logo */}
-        <div className="flex flex-col items-center min-w-[40px]">
+      {/* Contenitore centrato */}
+      <div className="max-w-screen-xl mx-auto mb-10 text-center">
+        
+        {/* Logo centrato */}
+        <div className="flex justify-center mb-6">
           <Link to="/">
             <img
               src="../../src/assets/netflix.png"
@@ -19,33 +19,27 @@ const Footer = () => {
           </Link>
         </div>
 
-        {/* Serie TV */}
-        <div className="flex flex-col items-center min-w-[120px]">
+        {/* Link affiancati sotto il logo */}
+        <div className="flex flex-wrap justify-center items-center gap-6 md:gap-16">
           <Link
             to="/serie-tv"
             className="text-[#d9d9d9] hover:text-red-600 no-underline"
           >
-            <h4 className="text-base font-bold mb-2">Serie TV</h4>
+            <h4 className="text-base font-bold">Serie TV</h4>
           </Link>
-        </div>
 
-        {/* Film */}
-        <div className="flex flex-col items-center min-w-[120px]">
           <Link
             to="/movies"
             className="text-[#d9d9d9] hover:text-red-600 no-underline"
           >
-            <h4 className="text-base font-bold mb-2">Film</h4>
+            <h4 className="text-base font-bold">Film</h4>
           </Link>
-        </div>
 
-        {/* Preferiti */}
-        <div className="flex flex-col items-center min-w-[120px]">
           <Link
             to="/preferiti"
             className="text-[#d9d9d9] hover:text-red-600 no-underline"
           >
-            <h4 className="text-base font-bold mb-2">Preferiti</h4>
+            <h4 className="text-base font-bold">Preferiti</h4>
           </Link>
         </div>
 
