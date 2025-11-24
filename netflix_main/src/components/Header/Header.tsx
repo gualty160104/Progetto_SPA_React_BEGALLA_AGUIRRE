@@ -1,7 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Netflix from "../../assets/netflix.png";
-import "./Header.css";
 
 // ❤️ Importiamo il context
 import { useFavorites } from "../../context/FavoriteContext";
@@ -22,35 +21,72 @@ const Header = () => {
   };
 
   return (
-    <header className="header">
-      <div className="header-container">
+    <header className="fixed top-0 left-0 w-full bg-black shadow-md z-[1000] py-2.5 px-5">
+      <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-5 md:gap-5">
 
-        {/* LOGO */}
-        <div className="header-logo cursor-pointer" onClick={() => navigate("/")}>
-          <img src={Netflix} alt="Netflix Logo" className="logo-image" />
+        {/* LOGO - centrato su mobile, a sinistra da md in su */}
+        <div 
+          className="flex items-center cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <img src={Netflix} alt="Netflix Logo" className="w-10 h-auto" />
         </div>
 
-        {/* NAV + SEARCH */}
-        <div className="nav-search-wrapper">
+        {/* NAV + SEARCH - tutto centrato su mobile, a destra da md in su */}
+        <div className="flex flex-col md:flex-row items-center gap-5 w-full md:w-auto md:ml-auto">
 
           {/* NAV */}
-          <nav className="header-nav">
-            <NavLink to="/" className="nav-link">Home</NavLink>
-            <NavLink to="/serie-tv" className="nav-link">Serie TV</NavLink>
-            <NavLink to="/movies" className="nav-link">Film</NavLink>
-            <NavLink to="/preferiti" className="nav-link">
+          <nav className="flex flex-wrap justify-center gap-5 md:gap-5">
+            <NavLink 
+              to="/" 
+              className={({ isActive }) => 
+                `no-underline text-white text-base px-2.5 py-1.5 rounded transition-colors duration-200 ${
+                  isActive ? 'bg-red-600' : 'hover:bg-red-600'
+                }`
+              }
+            >
+              Home
+            </NavLink>
+            <NavLink 
+              to="/serie-tv" 
+              className={({ isActive }) => 
+                `no-underline text-white text-base px-2.5 py-1.5 rounded transition-colors duration-200 ${
+                  isActive ? 'bg-red-600' : 'hover:bg-red-600'
+                }`
+              }
+            >
+              Serie TV
+            </NavLink>
+            <NavLink 
+              to="/movies" 
+              className={({ isActive }) => 
+                `no-underline text-white text-base px-2.5 py-1.5 rounded transition-colors duration-200 ${
+                  isActive ? 'bg-red-600' : 'hover:bg-red-600'
+                }`
+              }
+            >
+              Film
+            </NavLink>
+            <NavLink 
+              to="/preferiti" 
+              className={({ isActive }) => 
+                `no-underline text-white text-base px-2.5 py-1.5 rounded transition-colors duration-200 ${
+                  isActive ? 'bg-red-600' : 'hover:bg-red-600'
+                }`
+              }
+            >
               Preferiti {favorites.length > 0 && `(${favorites.length})`}
             </NavLink>
           </nav>
 
           {/* SEARCH BAR */}
-          <form onSubmit={handleSubmit} className="search-form">
+          <form onSubmit={handleSubmit} className="flex items-center w-full md:w-auto">
             <input
               type="text"
               placeholder="Cerca film o serie..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="search-input"
+              className="px-3 py-1.5 rounded-lg border-none outline-none text-sm w-full md:w-[180px] focus:md:w-[250px] transition-all duration-300"
             />
           </form>
 
