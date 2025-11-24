@@ -58,9 +58,17 @@ const Footer = () => {
         <p className="text-sm mt-1 flex items-center justify-center gap-1 text-gray-400">
           Made with <AiFillHeart className="text-red-600" /> using React & TailwindCSS
         </p>
+
       </div>
     </footer>
   );
 };
 
 export default Footer;
+
+
+
+
+
+
+

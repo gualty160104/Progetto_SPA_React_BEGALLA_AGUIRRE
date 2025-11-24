@@ -39,20 +39,13 @@ export default function HomePage() {
     <div className="w-screen flex flex-col gap-20 bg-black pb-32">
 
       {/* Sezione Hero */}
-      <section
-        className="relative w-screen h-[80vh] flex items-center justify-center bg-center bg-cover"
-        style={{ backgroundImage: `url(${background})` }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
-        <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-6xl sm:text-7xl md:text-9xl font-extrabold text-white drop-shadow-xl">
-            NETFLIX
-          </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-white mt-4 max-w-2xl drop-shadow-md">
-            Film, serie TV e tanto altro, senza limiti
-          </p>
-        </div>
-      </section>
+      <div className="w-screen flex items-center justify-center bg-gray-200">
+        <section className="flex flex-col items-center justify-center w-full h-[70vh] bg-cover bg-center px-4" style={{ backgroundImage: `url(${background})` }}>
+          <h1 className="text-5xl sm:text-7xl md:text-9xl font-bold text-white text-center"> NETFLIX </h1>
+          <p className="text-base sm:text-lg md:text-xl text-white mt-2 text-center px-4">Film, serie TV e tanto altro, senza limiti</p>
+        </section>
+      </div>
+
 
       {/* Serie TV in evidenza */}
       <section className="w-screen text-center mt-16 px-4">
@@ -132,9 +125,7 @@ export default function HomePage() {
               ))}
             </div>
             <div className="mt-8">
-              <Button variant="contained" onClick={() => navigate("/movies")}>
-                Vedi tutti i film
-              </Button>
+              <Button variant="contained" linkto="/serie-tv">Vedi tutte le serie TV</Button>
             </div>
           </>
         )}
