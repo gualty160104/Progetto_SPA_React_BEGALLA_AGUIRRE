@@ -46,6 +46,9 @@ const Details = () => {
         title: data.title,
         name: data.name,
         poster_path: data.poster_path,
+        vote_average: data.vote_average,
+        release_date: data.release_date,
+        first_air_date: data.first_air_date,
       });
     }
   };
