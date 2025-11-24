@@ -10,6 +10,7 @@ const BACKDROP_BASE_URL = "https://image.tmdb.org/t/p/original";
 const Details = () => {
   const { type, id } = useParams();
   const [data, setData] = useState(null);
+  const [cast, setCast] = useState([]); // Nuovo stato per il cast
   const [loading, setLoading] = useState(true);
 
   const { favorites, addFavorite, removeFavorite } = useFavorites();
@@ -20,6 +21,10 @@ const Details = () => {
         const endpoint = type === "movie" ? `movie/${id}` : `tv/${id}`;
         const result = await fetchFromTmdb(endpoint);
         setData(result);
+
+        // Fetch del cast principale
+        const credits = await fetchFromTmdb(`${endpoint}/credits`);
+        setCast(credits.cast?.slice(0, 6) || []);
       } catch (error) {
         console.error("Errore nel caricamento dei dettagli:", error);
       } finally {
@@ -120,6 +125,33 @@ const Details = () => {
               </span>
             )}
           </div>
+
+{/* CAST PRINCIPALE */}
+{cast.length > 0 && (
+  <div className="mt-8">
+    <h2 className="text-3xl md:text-4xl font-bold mb-6">Cast principale</h2>
+    <div className="flex overflow-x-auto gap-4 py-2">
+      {cast.map((actor) => (
+        <div
+          key={actor.id}
+          className="flex-shrink-0 w-24 text-center bg-gray-900 rounded-lg shadow-lg p-2 hover:scale-105 transform transition-transform duration-200"
+        >
+          <img
+            src={
+              actor.profile_path
+                ? `${IMAGE_BASE_URL}${actor.profile_path}`
+                : "https://via.placeholder.com/100x150?text=No+Image"
+            }
+            alt={actor.name}
+            className="w-24 h-32 object-cover rounded-lg mb-2"
+          />
+          <span className="text-sm text-gray-200">{actor.name}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
         </div>
       </div>
     </div>
