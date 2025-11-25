@@ -3,14 +3,17 @@ import { useParams } from "react-router-dom";
 import { useFavorites } from "../../context/FavoriteContext";
 import { useFetchTmdb } from "../../hooks/useFetchTmdb";
 import { IMAGE_BASE_URL, BACKDROP_BASE_URL } from "../../components/api/tmdb";
+import { useState, useEffect } from "react";
 
 const Details = () => {
   const { type, id } = useParams();
   const { favorites, addFavorite, removeFavorite } = useFavorites();
+  const [retryKey, setRetryKey] = useState(0);
+  const [mounted, setMounted] = useState(true); // per cleanup
 
   // Fetch dettagli e cast tramite custom hook
-  const { data, loading } = useFetchTmdb(type && id ? `${type}/${id}` : null);
-  const { data: creditsData } = useFetchTmdb(type && id ? `${type}/${id}/credits` : null);
+  const { data, loading, error } = useFetchTmdb(type && id ? `${type}/${id}` : null, retryKey);
+  const { data: creditsData, error: creditsError } = useFetchTmdb(type && id ? `${type}/${id}/credits` : null, retryKey);
 
   const cast = creditsData?.cast?.slice(0, 6) || [];
   const isFavorite = data && favorites.some(f => f.id === data.id && f.type === type);
@@ -34,11 +37,32 @@ const Details = () => {
     }
   };
 
-  if (loading)
-    return <p className="text-white text-center mt-20 text-xl">Caricamento...</p>;
+  const handleRetry = () => {
+    setRetryKey(prev => prev + 1);
+  };
 
-  if (!data)
-    return <p className="text-white text-center mt-20 text-xl">Dettagli non disponibili</p>;
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false); // cleanup
+  }, []);
+
+  if (loading) return <p className="text-white text-center mt-20 text-xl">Caricamento...</p>;
+
+  if ((error || creditsError) && mounted) {
+    return (
+      <div className="pt-32 text-center text-red-500">
+        <p>Si è verificato un errore durante il caricamento dei dettagli.</p>
+        <button
+          onClick={handleRetry}
+          className="mt-4 px-6 py-2 bg-red-600 rounded hover:bg-red-700 text-white"
+        >
+          Riprova
+        </button>
+      </div>
+    );
+  }
+
+  if (!data) return <p className="text-white text-center mt-20 text-xl">Dettagli non disponibili</p>;
 
   return (
     <div
@@ -77,9 +101,7 @@ const Details = () => {
 
           <button
             onClick={handleFavoriteClick}
-            className={`px-6 py-2 rounded-lg font-semibold mt-4 ${
-              isFavorite ? "bg-red-600 hover:bg-red-700" : "bg-gray-700 hover:bg-gray-600"
-            }`}
+            className={`px-6 py-2 rounded-lg font-semibold mt-4 ${isFavorite ? "bg-red-600 hover:bg-red-700" : "bg-gray-700 hover:bg-gray-600"}`}
           >
             {isFavorite ? "Rimuovi dai Preferiti" : "Aggiungi ai Preferiti"}
           </button>
@@ -87,15 +109,9 @@ const Details = () => {
           {/* Generi e durata */}
           <div className="flex flex-wrap gap-4 mt-4 justify-center md:justify-start">
             {data.genres?.map(genre => (
-              <span key={genre.id} className="bg-red-600 px-3 py-1 rounded-full text-sm font-medium">
-                {genre.name}
-              </span>
+              <span key={genre.id} className="bg-red-600 px-3 py-1 rounded-full text-sm font-medium">{genre.name}</span>
             ))}
-            {data.runtime && (
-              <span className="bg-gray-700 px-3 py-1 rounded-full text-sm font-medium">
-                {data.runtime} min
-              </span>
-            )}
+            {data.runtime && <span className="bg-gray-700 px-3 py-1 rounded-full text-sm font-medium">{data.runtime} min</span>}
           </div>
 
           {/* Cast principale */}

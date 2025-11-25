@@ -130,7 +130,7 @@ export default function HomePage() {
             <div className="flex justify-center mt-10">
               <Button
                 variant="contained"
-                onClick={() => navigate("/series")}
+                onClick={() => navigate("/serie-tv")}
                 className="px-6 py-3 text-lg"
               >
                 Vedi tutte le serie

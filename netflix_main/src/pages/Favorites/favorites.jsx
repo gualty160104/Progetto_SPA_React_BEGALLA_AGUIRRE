@@ -11,7 +11,9 @@ export default function Favorites() {
   if (favorites.length === 0) {
     return (
       <div className="pt-32 text-center text-white min-h-screen">
-        <h2 className="text-5xl font-extrabold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-red-400 drop-shadow-lg">I tuoi Preferiti</h2>
+        <h2 className="text-5xl font-extrabold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-red-400 drop-shadow-lg">
+          I tuoi Preferiti
+        </h2>
         <p>Non hai ancora aggiunto nulla ai preferiti.</p>
       </div>
     );
@@ -50,7 +52,7 @@ export default function Favorites() {
                 <div className="flex items-center justify-center gap-1 mt-2">
                   <AiFillStar className="text-yellow-400 text-lg" />
                   <span className="text-sm text-gray-300">
-                    {item.vote_average?.toFixed(1)}
+                    {item.vote_average?.toFixed(1) || "N/A"}
                   </span>
                 </div>
                 <button

@@ -1,7 +1,9 @@
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { fetchFromTmdb } from "../../components/api/tmdb";
 import { AiFillStar } from "react-icons/ai";
-import { useFetchTmdb } from "../../hooks/useFetchTmdb";
-import { IMAGE_BASE_URL } from "../../components/api/tmdb";
+
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
 export default function Search() {
   const location = useLocation();
@@ -9,20 +11,52 @@ export default function Search() {
   const params = new URLSearchParams(location.search);
   const query = params.get("query");
 
-  // Se non c'è query, non fare fetch
-  const movieEndpoint = query ? `search/movie?query=${encodeURIComponent(query)}` : null;
-  const tvEndpoint = query ? `search/tv?query=${encodeURIComponent(query)}` : null;
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [retryKey, setRetryKey] = useState(0); // trigger per retry
 
-  const { data: moviesData, loading: loadingMovies } = useFetchTmdb(movieEndpoint);
-  const { data: tvData, loading: loadingTv } = useFetchTmdb(tvEndpoint);
+  useEffect(() => {
+    if (!query) return;
 
-  const loading = loadingMovies || loadingTv;
+    let isMounted = true; // flag per cleanup
 
-  // Combina risultati e aggiunge il tipo
-  const results = [
-    ...(moviesData?.results?.map(item => ({ ...item, type: "movie" })) || []),
-    ...(tvData?.results?.map(item => ({ ...item, type: "tv" })) || [])
-  ].filter(item => item.poster_path || item.backdrop_path);
+    const fetchResults = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const [dataMovies, dataTv] = await Promise.all([
+          fetchFromTmdb(`search/movie`, { query }),
+          fetchFromTmdb(`search/tv`, { query }),
+        ]);
+
+        if (!isMounted) return;
+
+        const moviesWithType = dataMovies.results.map(item => ({ ...item, type: "movie" }));
+        const tvWithType = dataTv.results.map(item => ({ ...item, type: "tv" }));
+        const combined = [...moviesWithType, ...tvWithType];
+
+        // Filtra risultati senza immagini
+        const filtered = combined.filter(item => item.poster_path || item.backdrop_path);
+
+        setResults(filtered);
+      } catch (err) {
+        if (!isMounted) return;
+        console.error(err);
+        setError("Si è verificato un errore durante la ricerca.");
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchResults();
+
+    return () => {
+      // cleanup per evitare setState su componente smontato
+      isMounted = false;
+    };
+  }, [query, retryKey]);
 
   if (!query) {
     return (
@@ -38,24 +72,38 @@ export default function Search() {
         Risultati per "<span className="text-red-600">{query}</span>"
       </h2>
 
-      {loading ? (
-        <p className="text-lg mt-5">Caricamento...</p>
-      ) : results.length === 0 ? (
+      {loading && <p className="text-lg mt-5">Caricamento...</p>}
+
+      {error && (
+        <div className="text-red-500 mt-4">
+          <p>{error}</p>
+          <button
+            onClick={() => setRetryKey(prev => prev + 1)}
+            className="ml-2 px-4 py-1 bg-red-600 rounded hover:bg-red-700"
+          >
+            Riprova
+          </button>
+        </div>
+      )}
+
+      {!loading && !error && results.length === 0 && (
         <p className="text-lg mt-5">Nessun risultato trovato.</p>
-      ) : (
+      )}
+
+      {!loading && !error && results.length > 0 && (
         <div className="flex flex-wrap justify-center gap-6 px-4">
           {results.map((item) => {
             const image = item.poster_path
               ? `${IMAGE_BASE_URL}${item.poster_path}`
               : item.backdrop_path
               ? `${IMAGE_BASE_URL}${item.backdrop_path}`
-              : "https://fakeimg.pl/500x750/000/fff/?text=Nessuna+Immagine";
+              : "https://via.placeholder.com/500x750?text=Nessuna+Immagine";
 
             const title = item.title || item.name || "Titolo non disponibile";
 
             return (
               <div
-                key={`${item.id}-${item.type}`}
+                key={item.id + "-" + item.type}
                 onClick={() => navigate(`/details/${item.type}/${item.id}`)}
                 className="cursor-pointer w-44 transition-transform duration-200 hover:scale-105"
               >
