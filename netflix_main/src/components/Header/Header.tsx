@@ -21,21 +21,15 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-black shadow-md z-[1000] py-2.5 px-5">
+    <header className="fixed top-0 left-0 w-full bg-black shadow-md z-[1000] py-3.5 px-5">
       <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-5 md:gap-5">
-
-        {/* LOGO - centrato su mobile, a sinistra da md in su */}
         <div 
           className="flex items-center cursor-pointer"
           onClick={() => navigate("/")}
         >
           <img src={Netflix} alt="Netflix Logo" className="w-10 h-auto" />
         </div>
-
-        {/* NAV + SEARCH - tutto centrato su mobile, a destra da md in su */}
         <div className="flex flex-col md:flex-row items-center gap-5 w-full md:w-auto md:ml-auto">
-
-          {/* NAV */}
           <nav className="flex flex-wrap justify-center gap-5 md:gap-5">
             <NavLink 
               to="/" 
@@ -78,8 +72,6 @@ const Header = () => {
               Preferiti {favorites.length > 0 && `(${favorites.length})`}
             </NavLink>
           </nav>
-
-          {/* SEARCH BAR */}
           <form onSubmit={handleSubmit} className="flex items-center w-full md:w-auto">
             <input
               type="text"

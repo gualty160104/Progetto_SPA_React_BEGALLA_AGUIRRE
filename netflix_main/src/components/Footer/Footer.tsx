@@ -4,11 +4,7 @@ import { AiFillHeart } from "react-icons/ai";
 const Footer = () => {
   return (
     <footer className="bg-black text-[#f2f2f2] py-10 px-6 border-t-2 border-red-600">
-
-      {/* Contenitore centrato */}
       <div className="max-w-screen-xl mx-auto mb-10 text-center">
-        
-        {/* Logo centrato */}
         <div className="flex justify-center mb-6">
           <Link to="/">
             <img
@@ -18,8 +14,6 @@ const Footer = () => {
             />
           </Link>
         </div>
-
-        {/* Link affiancati sotto il logo */}
         <div className="flex flex-wrap justify-center items-center gap-6 md:gap-16">
           <Link
             to="/serie-tv"
@@ -45,7 +39,6 @@ const Footer = () => {
 
       </div>
 
-      {/* Divider + info finali */}
       <div className="text-center border-t border-gray-700 pt-6">
         <p>© {new Date().getFullYear()} Gualtiero e Rodrigo - Tutti i diritti riservati</p>
 

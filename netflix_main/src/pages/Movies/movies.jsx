@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "../../components/Card/card";
 import { CardContent } from "../../components/CardContent/cardcontent";
@@ -10,54 +10,71 @@ const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const Movies = () => {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const loaderRef = useRef(null);
-
-  // Funzione per caricare una pagina di film
-  const loadMovies = async () => {
+  const loadMovies = async (retry = false, signal) => {
     setLoading(true);
+    setError(null); // reset errore
     try {
-      const data = await fetchFromTmdb("discover/movie", { page });
+      const data = await fetchFromTmdb("discover/movie", { page, signal });
+      if (signal.aborted) return; // se fetch annullato, non aggiornare lo stato
+
       setMovies((prev) => [...prev, ...data.results]);
-    } catch (error) {
-      console.error("Errore nel caricamento dei film:", error);
+      if (data.page >= data.total_pages) {
+        setHasMore(false);
+      }
+    } catch (err) {
+      if (err.name === "AbortError") return; // fetch cancellato, non fare niente
+      console.error("Errore nel caricamento dei film:", err);
+      setError("Errore nel caricamento dei film. Riprova.");
+      if (!retry) {
+      }
     } finally {
-      setLoading(false);
+      if (!signal.aborted) setLoading(false);
     }
   };
 
-  // Carica la prima pagina e le successive quando page cambia
   useEffect(() => {
-    loadMovies();
+    const controller = new AbortController();
+    loadMovies(false, controller.signal);
+
+    return () => {
+      controller.abort(); // cleanup: annulla fetch se il componente si smonta
+    };
   }, [page]);
 
-  // Infinite scroll con IntersectionObserver
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      { rootMargin: "200px" }
-    );
+  const handleLoadMore = () => {
+    if (!loading && hasMore) {
+      setPage((prev) => prev + 1);
+    }
+  };
 
-    if (loaderRef.current) observer.observe(loaderRef.current);
-
-    return () => observer.disconnect();
-  }, [loading]);
+  const handleRetry = () => {
+    const controller = new AbortController();
+    loadMovies(true, controller.signal);
+  };
 
   return (
     <section className="w-screen min-h-screen bg-gradient-to-b from-black to-gray-900 px-6 py-16 pt-24 text-center">
-      
-      {/* Titolo */}
       <h2 className="text-5xl font-extrabold mb-12 bg-clip-text text-transparent bg-gradient-to-r from-red-600 to-red-400 drop-shadow-lg">
         Film
       </h2>
 
-      {/* Griglia film */}
+      {error && (
+        <div className="text-red-500 mb-6">
+          <p>{error}</p>
+          <button
+            onClick={handleRetry}
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+          >
+            Riprova
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 max-w-7xl mx-auto">
         {movies.map((movie) => (
           <Card
@@ -66,8 +83,6 @@ const Movies = () => {
             onClick={() => navigate(`/details/movie/${movie.id}`)}
           >
             <CardContent className="p-0">
-              
-              {/* Poster */}
               <img
                 src={
                   movie.poster_path
@@ -77,8 +92,6 @@ const Movies = () => {
                 alt={movie.title}
                 className="w-full h-96 object-cover"
               />
-
-              {/* Info */}
               <div className="p-4 text-center">
                 <h3 className="text-lg font-bold text-white">{movie.title}</h3>
                 <p className="text-sm text-gray-400">
@@ -91,17 +104,20 @@ const Movies = () => {
                   </span>
                 </div>
               </div>
-
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Loader / trigger per infinite scroll */}
-      <div ref={loaderRef} className="text-white text-lg mt-10 mb-20">
-        {loading ? "Caricamento..." : "Scorri per caricare di più"}
-      </div>
-
+      {hasMore && !error && (
+        <button
+          onClick={handleLoadMore}
+          className="mt-12 px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200"
+          disabled={loading}
+        >
+          {loading ? "Caricamento..." : "Carica di più"}
+        </button>
+      )}
     </section>
   );
 };
