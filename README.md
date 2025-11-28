@@ -73,7 +73,7 @@ yarn start
 ## Scelte Progettuali
 
 ### Gestione dello Stato Globale
-Ho scelto **Context API** invece di Redux perché:
+È stato scelto **Context API** invece di Redux perché:
 
 - Lo stato globale principale riguarda solo i **preferiti**, quindi non serve un sistema complesso come Redux.
 - Context API permette di condividere lo stato tra componenti in modo semplice e leggibile.
