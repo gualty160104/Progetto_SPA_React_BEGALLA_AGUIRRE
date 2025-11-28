@@ -1,4 +1,3 @@
-// src/hooks/useFetchTmdb.ts
 import { useState, useEffect } from "react";
 import { fetchFromTmdb } from "../components/api/tmdb";
 
@@ -8,7 +7,7 @@ export function useFetchTmdb(endpoint: string, params?: Record<string, any>) {
   const [error, setError] = useState<any>(null);
 
   useEffect(() => {
-    let isMounted = true; // per il cleanup
+    let isMounted = true; 
 
     const fetchData = async () => {
       try {
@@ -25,9 +24,9 @@ export function useFetchTmdb(endpoint: string, params?: Record<string, any>) {
     fetchData();
 
     return () => {
-      isMounted = false; // cleanup
+      isMounted = false; 
     };
-  }, [endpoint, JSON.stringify(params)]); // ricorda che params è un oggetto
+  }, [endpoint, JSON.stringify(params)]); 
 
   return { data, loading, error };
 }

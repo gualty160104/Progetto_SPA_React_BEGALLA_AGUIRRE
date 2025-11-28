@@ -31,7 +31,6 @@ const Movies = () => {
       console.error("Errore nel caricamento dei film:", err);
       setError("Errore nel caricamento dei film. Riprova.");
       if (!retry) {
-        // puoi implementare retry automatico se vuoi
       }
     } finally {
       if (!signal.aborted) setLoading(false);

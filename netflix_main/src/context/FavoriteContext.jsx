@@ -1,4 +1,3 @@
-// src/context/FavoritesContext.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const FavoritesContext = createContext();
@@ -70,5 +69,4 @@ export function useFavorites() {
   return ctx;
 }
 
-// ✅ Esporta anche come default per semplificare l'import
 export default FavoritesProvider;
